@@ -1,0 +1,36 @@
+{
+  "name": "express-mongo-jwt",
+  "version": "0.0.1",
+  "description": "Project for BossaBox Interview",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fr3d3rico/express-mongo-jwt.git"
+  },
+  "keywords": [
+    "bossabox",
+    "express",
+    "mongoose",
+    "mongo",
+    "jwt",
+    "token",
+    "swagger"
+  ],
+  "author": "@fr3d3rico",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fr3d3rico/express-mongo-jwt/issues"
+  },
+  "homepage": "https://github.com/fr3d3rico/express-mongo-jwt#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
