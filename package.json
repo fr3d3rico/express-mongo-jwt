@@ -4,6 +4,7 @@
   "description": "Project for BossaBox Interview",
   "main": "app.js",
   "scripts": {
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
