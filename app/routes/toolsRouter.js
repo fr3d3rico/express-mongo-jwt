@@ -2,18 +2,45 @@ const router = require('express').Router();
 const ToolSchema = require('../model/Tool');
 
 router.get('/tools', (req, res) => {
+    var query = {};
+    new Promise(resolve => {
+        if( req.query.tag ) {
+            query = {tag: req.query.tag};
+            resolve();
+        }
+        else {
+            resolve();
+        }
+    });
 
-    ToolSchema.find({}, (err, docs) => {
+    ToolSchema.find(query, (err, docs) => {
         res.status(200).send(docs);
     });
-    //res.status(200).send('/tools');
 });
 
 router.post('/tools', (req, res) => {
-    ToolSchema.save((err, newTool) => {
+    var newTool = new ToolSchema({ title: req.body.title, link: req.body.link, description: req.body.description});
+    newTool.save((err, tool) => {
         if(err) return res.status(500).send('Server error!(save): ' + err);
 
-        res.status(201).send(newTool);
+        res.status(201).send(tool);
+    });
+});
+
+router.delete('/tools/:id', (req, res) => {
+    if( !req.params.id ) res.status(404).send('Parameter not found!').end();
+
+    ToolSchema.deleteOne({_id: req.params.id}, (err, result) => {
+        if(err) return res.status(500).send('Server error!(save): ' + err).end();;
+
+        // console.log(result);
+
+        if(result.deletedCount === 0) {
+            res.status(404).send(result).end();
+        }
+        else {
+            res.status(200).send(result).end();
+        }
     });
 });
 
