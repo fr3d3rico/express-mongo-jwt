@@ -29,7 +29,9 @@
   "homepage": "https://github.com/fr3d3rico/express-mongo-jwt#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "helmet": "^3.18.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.6.0",
     "swagger-ui-express": "^4.0.6"
