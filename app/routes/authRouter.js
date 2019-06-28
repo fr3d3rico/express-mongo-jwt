@@ -1,10 +1,13 @@
 const router = require('express').Router();
 const UserSchema = require('../model/User');
 
-const {SECRET_KEY} = require('./config.js');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+
+const { SECRET_KEY, LIFE_TIME_TOKEN } = require('../config/config');
 
 router.post('/register', (req, res) => {
-    console.log('/register');
+    // console.log('/register');
 
     const name = req.body.name;
     const email = req.body.email;
@@ -20,7 +23,7 @@ router.post('/register', (req, res) => {
         newUser.save((err, user) => {
             if(err) return res.status(500).send('Server error!(save): ' + err);
 
-            const expiresIn = 30;
+            const expiresIn = LIFE_TIME_TOKEN;
             const accessToken = jwt.sign({id: user.id}, SECRET_KEY, {
                 expiresIn: expiresIn
             });
@@ -30,7 +33,7 @@ router.post('/register', (req, res) => {
                 email: user.email
             }
 
-            res.status(200).send({'user': userData, 'access_token': accessToken, 'expires_in': expiresIn});
+            res.status(201).send({'user': userData, 'access_token': accessToken, 'expires_in': expiresIn});
         });
     });
 
@@ -53,7 +56,7 @@ router.post('/login', (req, res) => {
 
         if(!result) return res.status(401).send('Password not valid!');
 
-        const expiresIn = 30;
+        const expiresIn = LIFE_TIME_TOKEN;
         const accessToken = jwt.sign({id: doc.id}, SECRET_KEY, {
             expiresIn: expiresIn
         });

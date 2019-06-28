@@ -1,11 +1,13 @@
+const jwt = require('jsonwebtoken');
+
 const {SECRET_KEY} = require('./config.js');
 
 module.exports = (req, res, next) => {
-    console.log('verifyJWT');
+    // console.log('verifyJWT');
 
     var token = req.headers['x-access-token'];
     //var token = req.cookie('x-access-token');
-    console.log(req.headers['x-access-token']);
+    // console.log(req.headers['x-access-token']);
 
     if(!token) return res.status(401).send({auth: false, message: 'No token provided.'});
 

@@ -6,10 +6,15 @@ describe('Testing /tools URL', () => {
     before('Mongo Connect', (done) => {
         mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true}, () => {
             //reset db
-            mongoose.connection.db.dropDatabase();
+            mongoose.connection.db.collection('users').deleteMany({}, (err, result) => {
+                if (err) throw new Error(err);
+                mongoose.connection.db.collection('tools').deleteMany({}, (err, result) => {
+                    if (err) throw new Error(err);
+                    return done();
+                });
+            });
         });
-
-        return done();
+        
     });
 
     after('Mongo Disconnect', (done) => {
@@ -113,6 +118,57 @@ describe('Testing /tools URL', () => {
             .end((err, res) => {
                 if(err) throw err;
                 return done();
+            });
+    });
+
+    it('Test POST /register - Should return status response 201', (done) => {
+        request(app)
+            .post('/register')
+            .send({
+                name: "Fred",
+                email: "fred@fred.com",
+                password: "123",
+            })
+            .set('Content-Type', 'application/json')
+            .expect(201)
+            .end((err, res) => {
+                if(err) throw err;
+
+                //console.log(res.body);
+
+                return done();
+            });
+    });
+
+    it('Test POST /login - Save new user and try login with it. Should return status response 200', (done) => {
+        request(app)
+            .post('/register')
+            .send({
+                name: "Fred 2",
+                email: "fred2@fred.com",
+                password: "123",
+            })
+            .set('Content-Type', 'application/json')
+            .expect(201)
+            .end((err, res) => {
+                if(err) throw err;
+
+                request(app)
+                    .post('/login')
+                    .send({
+                        email: "fred2@fred.com",
+                        password: "123",
+                    })
+                    .set('Content-Type', 'application/json')
+                    .expect(200)
+                    .end((err, res) => {
+                        if(err) throw err;
+
+                        return done();
+                    });
+                //console.log(res.body);
+                // let accessToken = res.cookie('access_token');
+                // console.log(res.cookie('access_token'));
             });
     });
 });
