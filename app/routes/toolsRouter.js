@@ -14,7 +14,7 @@ router.get('/tools', verifyJWT, (req, res) => {
             resolve();
         }
     });
-
+    
     ToolSchema.find(query, (err, docs) => {
         res.status(200).send(docs);
     });
