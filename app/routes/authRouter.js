@@ -40,9 +40,9 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-    console.log('/login');
+    // console.logk('/login');
 
-    console.log(req.cookies);
+    // console.log(req.cookies);
     // res.cookie('teste', 'xxx');
 
     const email = req.body.email;
@@ -66,7 +66,7 @@ router.post('/login', (req, res) => {
             email: doc.email
         }
 
-        console.log(accessToken);
+        // console.log(accessToken);
 
         //res.append('Set-Cookie', 'access_token='+accessToken+'; HttpOnly; Secure; Path=/;');
         // res.append('Set-Cookie', 'b=a');
