@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const app = require('../app');
 
 describe('Testing /tools URL', () => {
+    const agent = request.agent(app);
+
     before('Mongo Connect', (done) => {
         mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true}, () => {
             //reset db
@@ -23,10 +25,10 @@ describe('Testing /tools URL', () => {
         return done();
     });
 
-    it('Test GET /tools - Should return status response 200', (done) => {
+    it('Test GET /tools WITHOUT token - Should return status response 401 unauthorized', (done) => {
         request(app)
             .get('/tools')
-            .expect(200)
+            .expect(401)
             .end((err, res) => {
                 if(err) throw err;
 
@@ -34,7 +36,52 @@ describe('Testing /tools URL', () => {
             });
     });
 
-    it('Test GET /tools?tag=node - Should return Tool items tagged with specific tag', (done) => {
+    it('Test GET /tools with token - Should return status response 200', (done) => {
+        const name = "Fred 3";
+        const email = "fred3@fred.com";
+        const password = "123";
+
+        request(app)
+            .post('/register')
+            .send({
+                name: name,
+                email: email,
+                password: password,
+            })
+            .set('Content-Type', 'application/json')
+            .expect(201)
+            .end((err, res) => {
+                if(err) throw err;
+
+                request(app)
+                    .post('/login')
+                    .send({
+                        email: email,
+                        password: password,
+                    })
+                    .set('Content-Type', 'application/json')
+                    .expect(200)
+                    .end((err, res) => {
+                        if(err) throw err;
+
+                        const access_token = res.body.access_token;
+
+                        request(app)
+                            .get('/tools')
+                            .set('x-access-token', access_token)
+                            .expect(200)
+                            .end((err, res) => {
+                                if(err) throw err;
+                
+                                return done();
+                            });
+                    });
+            });
+
+        
+    });
+
+    it('Test GET /tools?tag=node WITHOUT token - Should return http status 401 unauthorized', (done) => {
         const tag = "node";
         
         //Save a tool
@@ -46,23 +93,79 @@ describe('Testing /tools URL', () => {
                 description: "Description 1",
             })
             .set('Content-Type', 'application/json')
+            .expect(401)
+            .end((err, res) => {
+                if(err) throw err;
+                return done();
+            });
+    });
+
+    it('Test GET /tools?tag=node With token - Should return Tool items tagged with specific tag', (done) => {
+        const tag = "node";
+
+        const name = "Fred 4";
+        const email = "fred4@fred.com";
+        const password = "123";
+        
+        //register new user
+        request(app)
+            .post('/register')
+            .send({
+                name: name,
+                email: email,
+                password: password,
+            })
+            .set('Content-Type', 'application/json')
             .expect(201)
             .end((err, res) => {
                 if(err) throw err;
 
-                //Find that tool
+                //Login
                 request(app)
-                .get(`/tools?tag=${tag}`)
-                .expect(200)
-                .end((err, res) => {
-                    if(err) throw err;
+                    .post('/login')
+                    .send({
+                        email: email,
+                        password: password,
+                    })
+                    .set('Content-Type', 'application/json')
+                    .expect(200)
+                    .end((err, res) => {
+                        if(err) throw err;
 
-                    return done();
-                });
+                        const access_token = res.body.access_token;
+
+                        //Save a tool
+                        request(app)
+                            .post('/tools')
+                            .set('x-access-token', access_token)
+                            .send({
+                                title: "Title 1",
+                                link: "link 1",
+                                description: "Description 1",
+                            })
+                            .set('Content-Type', 'application/json')
+                            .expect(201)
+                            .end((err, res) => {
+                                if(err) throw err;
+
+                                //Find that tool
+                                request(app)
+                                .get(`/tools?tag=${tag}`)
+                                .set('x-access-token', access_token)
+                                .expect(200)
+                                .end((err, res) => {
+                                    if(err) throw err;
+
+                                    return done();
+                                });
+                            });
+                    });
             });
+
+        
     });
 
-    it('Test POST /tools - Should save new tool item', (done) => {
+    it('Test POST /tools WITHOUT token- Should return http status 401 unauthorized', (done) => {
         request(app)
             .post('/tools')
             .send({
@@ -71,7 +174,7 @@ describe('Testing /tools URL', () => {
                 description: "Description 2",
             })
             .set('Content-Type', 'application/json')
-            .expect(201)
+            .expect(401)
             .end((err, res) => {
                 if(err) throw err;
 
@@ -79,36 +182,132 @@ describe('Testing /tools URL', () => {
             });
     });
 
-    it('Test DELETE /tools/:id - Should remove tool item', (done) => {
+    it('Test POST /tools with token - Should save new tool item', (done) => {
+        
+        const name = "Fred 5";
+        const email = "fred5@fred.com";
+        const password = "123";
+        
+        //register new user
         request(app)
-            .get('/tools')
-            .expect(200)
+            .post('/register')
+            .send({
+                name: name,
+                email: email,
+                password: password,
+            })
+            .set('Content-Type', 'application/json')
+            .expect(201)
             .end((err, res) => {
                 if(err) throw err;
 
-                var data = res.body;
+                //Login
+                request(app)
+                    .post('/login')
+                    .send({
+                        email: email,
+                        password: password,
+                    })
+                    .set('Content-Type', 'application/json')
+                    .expect(200)
+                    .end((err, res) => {
+                        if(err) throw err;
 
-                // console.log(res.body);
-                // data.forEach(element => {
-                //     console.log(element);
-                // });
+                        const access_token = res.body.access_token;
 
-                if( data ) {
                         request(app)
-                            .delete(`/tools/${data[0]._id}`)
-                            .expect(200)
+                            .post('/tools')
+                            .send({
+                                title: "Title 2",
+                                link: "link 2",
+                                description: "Description 2",
+                            })
+                            .set('x-access-token', access_token)
+                            .set('Content-Type', 'application/json')
+                            .expect(201)
                             .end((err, res) => {
                                 if(err) throw err;
 
                                 return done();
-                            });
-                }
-                else {
-                    throw err;
-                }
+                        });
+                });
+        });
+    });
+
+    it('Test DELETE /tools/:id WITHOUT token - SShould return http status 401 unauthorized', (done) => {
+        request(app)
+            .delete('/tools/1')
+            .expect(401)
+            .end((err, res) => {
+                if(err) throw err;
+
+                return done();
             });
+    });
+
+    it('Test DELETE /tools/:id with token - Should remove tool item', (done) => {
+        const name = "Fred 6";
+        const email = "fred6@fred.com";
+        const password = "123";
         
-        
+        //register new user
+        request(app)
+            .post('/register')
+            .send({
+                name: name,
+                email: email,
+                password: password,
+            })
+            .set('Content-Type', 'application/json')
+            .expect(201)
+            .end((err, res) => {
+                if(err) throw err;
+
+                //Login
+                request(app)
+                    .post('/login')
+                    .send({
+                        email: email,
+                        password: password,
+                    })
+                    .set('Content-Type', 'application/json')
+                    .expect(200)
+                    .end((err, res) => {
+                        if(err) throw err;
+
+                        const access_token = res.body.access_token;
+
+                        request(app)
+                            .get('/tools')
+                            .set('x-access-token', access_token)
+                            .expect(200)
+                            .end((err, res) => {
+                                if(err) throw err;
+
+                                var data = res.body;
+
+                                // console.log(res.body);
+                                // data.forEach(element => {
+                                //     console.log(element);
+                                // });
+
+                                if( data ) {
+                                        request(app)
+                                            .delete(`/tools/${data[0]._id}`)
+                                            .set('x-access-token', access_token)
+                                            .expect(200)
+                                            .end((err, res) => {
+                                                if(err) throw err;
+
+                                                return done();
+                                            });
+                                }
+                                else {
+                                    throw err;
+                                }
+                            });
+                });
+        });
     });
 
     it('Test DELETE /tools - Try url without parameter. Should return error 404', (done) => {
@@ -169,6 +368,7 @@ describe('Testing /tools URL', () => {
                 //console.log(res.body);
                 // let accessToken = res.cookie('access_token');
                 // console.log(res.cookie('access_token'));
+                // const access_token = res.body.access_token;
             });
     });
 });
