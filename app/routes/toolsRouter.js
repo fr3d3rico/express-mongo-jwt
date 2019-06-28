@@ -1,7 +1,9 @@
 const router = require('express').Router();
 const ToolSchema = require('../model/Tool');
 
-router.get('/tools', (req, res) => {
+const verifyJWT = require('../config/verifyJWT');
+
+router.get('/tools', verifyJWT, (req, res) => {
     var query = {};
     new Promise(resolve => {
         if( req.query.tag ) {
@@ -18,7 +20,7 @@ router.get('/tools', (req, res) => {
     });
 });
 
-router.post('/tools', (req, res) => {
+router.post('/tools', verifyJWT, (req, res) => {
     var newTool = new ToolSchema({ title: req.body.title, link: req.body.link, description: req.body.description});
     newTool.save((err, tool) => {
         if(err) return res.status(500).send('Server error!(save): ' + err);
@@ -27,7 +29,7 @@ router.post('/tools', (req, res) => {
     });
 });
 
-router.delete('/tools/:id', (req, res) => {
+router.delete('/tools/:id', verifyJWT, (req, res) => {
     if( !req.params.id ) res.status(404).send('Parameter not found!').end();
 
     ToolSchema.deleteOne({_id: req.params.id}, (err, result) => {
