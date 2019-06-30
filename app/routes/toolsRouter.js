@@ -10,9 +10,7 @@ router.get('/tools', verifyJWT, (req, res) => {
             query = {tag: req.query.tag};
             resolve();
         }
-        else {
-            resolve();
-        }
+        resolve();
     });
     
     ToolSchema.find(query, (err, docs) => {

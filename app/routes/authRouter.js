@@ -7,7 +7,6 @@ const bcrypt = require('bcryptjs');
 const { SECRET_KEY, LIFE_TIME_TOKEN } = require('../config/config');
 
 router.post('/register', (req, res) => {
-    // console.log('/register');
 
     const name = req.body.name;
     const email = req.body.email;
@@ -40,10 +39,6 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-    // console.logk('/login');
-
-    // console.log(req.cookies);
-    // res.cookie('teste', 'xxx');
 
     const email = req.body.email;
     const password = req.body.password;
@@ -66,15 +61,7 @@ router.post('/login', (req, res) => {
             email: doc.email
         }
 
-        // console.log(accessToken);
-
-        //res.append('Set-Cookie', 'access_token='+accessToken+'; HttpOnly; Secure; Path=/;');
-        // res.append('Set-Cookie', 'b=a');
-        //res.cookie('access_token', accessToken);
         res.status(200).cookie('access_token', accessToken).send({'user': userData, 'access_token': accessToken, 'expires_in': expiresIn});
-        
-        //res.set('x-access-token', accessToken);
-        // res.redirect('/');
     });
 });
 
