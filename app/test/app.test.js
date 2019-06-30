@@ -142,6 +142,7 @@ describe('Testing /tools URL', () => {
                                 title: "Title 1",
                                 link: "link 1",
                                 description: "Description 1",
+                                tags: [tag, "mongoose", "mongodb"]
                             })
                             .set('Content-Type', 'application/json')
                             .expect(201)
@@ -369,6 +370,52 @@ describe('Testing /tools URL', () => {
                 // let accessToken = res.cookie('access_token');
                 // console.log(res.cookie('access_token'));
                 // const access_token = res.body.access_token;
+            });
+    });
+
+    it('Test GET /register - Should return status response 404', (done) => {
+        request(app)
+            .get('/register')
+            .expect(404)
+            .end((err, res) => {
+                if(err) throw err;
+
+                return done();
+            });
+    });
+
+    it('Test GET /login - Should return status response 404', (done) => {
+        request(app)
+            .get('/login')
+            .expect(404)
+            .end((err, res) => {
+                if(err) throw err;
+
+                return done();
+            });
+    });
+
+    it('Test GET /tools WITH token HEADERS but no data - Should return status response 401', (done) => {
+        request(app)
+            .get('/tools')
+            .set('x-access-token', '')
+            .expect(401)
+            .end((err, res) => {
+                if(err) throw err;
+
+                return done();
+            });
+    });
+
+    it('Test GET /tools WITH OLD token HEADERS - Should return status response 403', (done) => {
+        request(app)
+            .get('/tools')
+            .set('x-access-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NjE5Mjk5MDAsImV4cCI6MTU2MTkzMDA4MH0.pMwUwHL1MuFPluY3IlWsFc0wB02S5ibvOuV_Ptw6ASk')
+            .expect(403)
+            .end((err, res) => {
+                if(err) throw err;
+
+                return done();
             });
     });
 });

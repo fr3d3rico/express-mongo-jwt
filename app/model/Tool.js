@@ -5,7 +5,7 @@ var toolSchema = new mongoose.Schema({
     title: String,
     link: String,
     description: String,
-    //tags
+    tags: Array
 });
 
 module.exports = mongoose.model('Tools', toolSchema);

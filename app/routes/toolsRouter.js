@@ -19,7 +19,7 @@ router.get('/tools', verifyJWT, (req, res) => {
 });
 
 router.post('/tools', verifyJWT, (req, res) => {
-    var newTool = new ToolSchema({ title: req.body.title, link: req.body.link, description: req.body.description});
+    var newTool = new ToolSchema({ title: req.body.title, link: req.body.link, description: req.body.description, tags: req.body.tags});
     newTool.save((err, tool) => {
         if(err) return res.status(500).send('Server error!(save): ' + err);
 
