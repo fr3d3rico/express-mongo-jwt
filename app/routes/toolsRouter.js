@@ -33,8 +33,6 @@ router.delete('/tools/:id', verifyJWT, (req, res) => {
     ToolSchema.deleteOne({_id: req.params.id}, (err, result) => {
         if(err) return res.status(500).send('Server error!(save): ' + err).end();;
 
-        // console.log(result);
-
         if(result.deletedCount === 0) {
             res.status(404).send(result).end();
         }
