@@ -1,9 +1,19 @@
 {
-    "openapi": "3.0.2",
+    "swagger": "2.0",
     "info": {
+        "version": "1.0.0",
         "title": "BossaBox App for Interview",
         "description": "BossaBox App for Interview"
     },
+    "host": "localhost:3000",
+    "schemes": ["http"],
+    "consumes": [
+        "application/json"
+      ],
+      "produces": [
+        "application/json"
+    ],
+    
     "paths": {
         "/register" : {
             "get": {
@@ -77,23 +87,18 @@
             }
         },
         "/tools" : {
+            "parameters": [
+                {
+                    "name": "x-access-token",
+                    "in": "header",
+                    "required": true,
+                    "description": "Access auth token",
+                    "type": "string"
+                }
+            ],
             "get": {
                 "tags": ["Tools"],
                 "summary": "Get all Tools from database",
-                "consumes":[
-                    "application/json"
-                 ],
-                 "produces":[
-                    "application/json"
-                 ],
-                "parameters": 
-                    [{
-                        "in": "header",
-                        "name": "x-access-token",
-                        "description": "Access auth token",
-                        "required": true,
-                        "type": "string"
-                    }],
                 "responses": {
                     "200": {
                         "description": "Get all Tools from database!",
