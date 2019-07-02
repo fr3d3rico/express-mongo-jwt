@@ -2,7 +2,7 @@
   "name": "express-mongo-jwt",
   "version": "0.0.1",
   "description": "Project for BossaBox Interview",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
     "test": "mocha app/test/*.js"
