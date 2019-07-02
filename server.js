@@ -2,7 +2,7 @@ const app = require('./app/app');
 const db = require('./app/config/db');
 
 const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./api-doc/openapi.json');
+const swaggerDocument = require('./api-doc/swagger.json');
 
 const SERVER_PORT = process.env.SERVER_PORT || 3000;
 const SERVER_HOST = process.env.SERVER_HOST || 'localhost';
