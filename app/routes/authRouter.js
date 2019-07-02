@@ -23,7 +23,7 @@ router.post('/register', (req, res) => {
             if(err) return res.status(500).send('Server error!(save): ' + err);
 
             const expiresIn = LIFE_TIME_TOKEN;
-            const accessToken = jwt.sign({id: user.id}, SECRET_KEY, {
+            const accessToken = jwt.sign({id: user._id}, SECRET_KEY, {
                 expiresIn: expiresIn
             });
             
@@ -52,7 +52,7 @@ router.post('/login', (req, res) => {
         if(!result) return res.status(401).send('Password not valid!');
 
         const expiresIn = LIFE_TIME_TOKEN;
-        const accessToken = jwt.sign({id: doc.id}, SECRET_KEY, {
+        const accessToken = jwt.sign({id: doc._id}, SECRET_KEY, {
             expiresIn: expiresIn
         });
 
