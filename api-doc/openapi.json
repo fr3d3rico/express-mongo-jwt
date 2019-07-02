@@ -1,5 +1,175 @@
 {
     "openapi": "3.0.2",
-    "title": "BossaBox App for Interview",
-    "description": "BossaBox App for Interview"
+    "info": {
+        "title": "BossaBox App for Interview",
+        "description": "BossaBox App for Interview"
+    },
+    "paths": {
+        "/register" : {
+            "get": {
+                "tags": ["Register"],
+                "summary": "This endpoint doesn't exists. Should return 404 http code.",
+                "responses": {
+                    "404": {
+                        "description": "This page doesn't exists."
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Register"],
+                "summary": "Register new user.",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserRegister"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created!"
+                    },
+                    "200": {
+                        "description": "User already exist!"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "get": {
+                "tags": ["Login"],
+                "summary": "This endpoint doesn't exists. Should return 404 http code.",
+                "responses": {
+                    "404": {
+                        "description": "This page doesn't exists."
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Login"],
+                "summary": "Register new user.",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserLogin"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User login!",
+                        "schema": {
+                            "$ref": "#/components/schemas/UserLogged"
+                        }
+                    },
+                    "404": {
+                        "description": "User login with wrong email and password."
+                    }
+                }
+            }
+        },
+        "/tools" : {
+            "get": {
+                "tags": ["Tools"],
+                "summary": "Get all Tools from database",
+                "consumes":[
+                    "application/json"
+                 ],
+                 "produces":[
+                    "application/json"
+                 ],
+                "parameters": 
+                    [{
+                        "in": "header",
+                        "name": "x-access-token",
+                        "description": "Access auth token",
+                        "required": true,
+                        "type": "string"
+                    }],
+                "responses": {
+                    "200": {
+                        "description": "Get all Tools from database!",
+                        "schema": {
+                            "$ref": "#/components/schemas/Tool"
+                        }
+                    },
+                    "401": {
+                        "description": "User Unauthorized. Maybe email or password is wrong."
+                    }
+                }
+            }
+        }
+    },
+
+    "components": {
+        "schemas" : {
+            "UserRegister": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserLogin": {
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserLogged": {
+                "properties": {
+                    "user": {
+                        "name" : {
+                            "type": "string"
+                        },
+                        "email": {
+                            "type": "string"
+                        }
+                    },
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Tool": {
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "link": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "tags": [
+                        {
+                        "type": "string"
+                        }
+                    ]
+                }
+            }
+        }
+    }
 }
