@@ -4,6 +4,9 @@ Project for BossaBox Interview
 
 https://swagger.io/specification/
 
+>>>> 2.0
+https://swagger.io/docs/specification/2-0/describing-request-body/
+
 
 
 Debug
