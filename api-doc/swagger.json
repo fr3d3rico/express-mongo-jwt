@@ -28,17 +28,16 @@
             "post": {
                 "tags": ["Register"],
                 "summary": "Register new user.",
-                "requestBody": {
-                    "description": "",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserRegister"
-                            }
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "Data for new user.",
+                        "schema": {
+                            "$ref": "#/components/schemas/UserRegister"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "201": {
                         "description": "User created!"
@@ -62,17 +61,16 @@
             "post": {
                 "tags": ["Login"],
                 "summary": "Register new user.",
-                "requestBody": {
-                    "description": "",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UserLogin"
-                            }
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User data for login",
+                        "schema": {
+                            "$ref": "#/components/schemas/UserLogin"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "User login!",
@@ -80,8 +78,14 @@
                             "$ref": "#/components/schemas/UserLogged"
                         }
                     },
+                    "401": {
+                        "description": "User login with wrong email and password. (Unauthorized)"
+                    },
+                    "403": {
+                        "description": "User login with wrong email and password. Maybe token is no longer valid."
+                    },
                     "404": {
-                        "description": "User login with wrong email and password."
+                        "description": "User not found."
                     }
                 }
             }
@@ -108,6 +112,97 @@
                     },
                     "401": {
                         "description": "User Unauthorized. Maybe email or password is wrong."
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Tools"],
+                "summary": "Save new Tools",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "New Tool data",
+                        "schema": {
+                            "$ref": "#/components/schemas/Tool"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success!",
+                        "schema": {
+                            "$ref": "#/components/schemas/Tool"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error while trying save data."
+                    }
+                }
+            }
+        },
+        "/tools/{id}" : {
+            "parameters": [
+                {
+                    "name": "x-access-token",
+                    "in": "header",
+                    "required": true,
+                    "description": "Access auth token",
+                    "type": "string"
+                }
+            ],
+            "delete": {
+                "tags": ["Tools"],
+                "summary": "Save new Tools",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Tool id!"
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Parameter not found OR Item not found in database."
+                    },
+                    "500": {
+                        "description": "Server error while trying delete data."
+                    }
+                }
+            }
+        },
+        "/tools?tag={tag}" : {
+            "parameters": [
+                {
+                    "name": "x-access-token",
+                    "in": "header",
+                    "required": true,
+                    "description": "Access auth token",
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "tags": ["Tools"],
+                "summary": "Save new Tools",
+                "parameters": [
+                    {
+                        "name": "tag",
+                        "in": "query",
+                        "description": "Tag name"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tools items with related tag",
+                        "schema": {
+                            "$ref": "#/components/schemas/Tool"
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found in database."
+                    },
+                    "500": {
+                        "description": "Server error while trying retrieve data."
                     }
                 }
             }
@@ -159,6 +254,7 @@
             },
             "Tool": {
                 "properties": {
+                    "_id": "string",
                     "title": {
                         "type": "string"
                     },
@@ -168,11 +264,12 @@
                     "description": {
                         "type": "string"
                     },
-                    "tags": [
-                        {
-                        "type": "string"
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
                         }
-                    ]
+                    }
                 }
             }
         }
