@@ -5,7 +5,7 @@
         "title": "BossaBox App for Interview",
         "description": "BossaBox App for Interview"
     },
-    "host": "localhost:3000",
+    "basePath": "/",
     "schemes": ["http"],
     "consumes": [
         "application/json"
