@@ -1,4 +1,5 @@
 const request = require('supertest');
+const assert = require('assert');
 const mongooseTool = require('mongoose');
 const app = require('../app');
 
@@ -28,6 +29,9 @@ describe('Testing /tools URL', () => {
         request(app)
             .get('/tools')
             .expect(401)
+            .expect((res) => {
+                assert.equal(res.body.msg, "No token provided.");
+            })
             .end((err, res) => {
                 if(err) throw err;
 
@@ -35,10 +39,10 @@ describe('Testing /tools URL', () => {
             });
     });
 
-    it('Test GET /tools with token - Should return status response 200', (done) => {
-        const name = "Fred 3";
-        const email = "fred3@fred.com";
-        const password = "123";
+    it('Test GET /tools with token - Should return status response 404 (no item)', (done) => {
+        const name = "Fred 33";
+        const email = "fred33@fred.com";
+        const password = "123456";
 
         request(app)
             .post('/register')
@@ -60,17 +64,20 @@ describe('Testing /tools URL', () => {
                     })
                     .set('Content-Type', 'application/json')
                     .expect(200)
-                    .end((err, res) => {
-                        if(err) throw err;
+                    .end((err2, res2) => {
+                        if(err2) throw err2;
 
-                        const access_token = res.body.access_token;
+                        const access_token = res2.body.access_token;
 
                         request(app)
                             .get('/tools')
                             .set('x-access-token', access_token)
-                            .expect(200)
-                            .end((err, res) => {
-                                if(err) throw err;
+                            .expect(404)
+                            .expect((res) => {
+                                assert.equal(res.body.msg, "Items not found with related tag.");
+                            })
+                            .end((err3, res3) => {
+                                if(err3) throw err3;
                 
                                 return done();
                             });
@@ -93,6 +100,9 @@ describe('Testing /tools URL', () => {
             })
             .set('Content-Type', 'application/json')
             .expect(401)
+            .expect((res) => {
+                assert.equal(res.body.msg, "No token provided.");
+            })
             .end((err, res) => {
                 if(err) throw err;
                 return done();
@@ -165,6 +175,74 @@ describe('Testing /tools URL', () => {
         
     });
 
+    it('Test GET /tools?tag=xxxxxx With token - Find with wrong Tag. Should return no items.', (done) => {
+        const tag = "node";
+        const wrongTag = "xxxxxx";
+
+        const name = "Fred 44";
+        const email = "fred44@fred.com";
+        const password = "123456";
+        
+        //register new user
+        request(app)
+            .post('/register')
+            .send({
+                name: name,
+                email: email,
+                password: password,
+            })
+            .set('Content-Type', 'application/json')
+            .expect(201)
+            .end((err, res) => {
+                if(err) throw err;
+
+                //Login
+                request(app)
+                    .post('/login')
+                    .send({
+                        email: email,
+                        password: password,
+                    })
+                    .set('Content-Type', 'application/json')
+                    .expect(200)
+                    .end((err2, res2) => {
+                        if(err2) throw err2;
+
+                        const access_token = res2.body.access_token;
+
+                        //Save a tool
+                        request(app)
+                            .post('/tools')
+                            .set('x-access-token', access_token)
+                            .send({
+                                title: "Title 1",
+                                link: "link 1",
+                                description: "Description 1",
+                                tags: [tag, "mongoose", "mongodb"]
+                            })
+                            .set('Content-Type', 'application/json')
+                            .expect(201)
+                            .end((err3, res3) => {
+                                if(err3) throw err3;
+
+                                //Find that tool
+                                request(app)
+                                    .get(`/tools?tag=${wrongTag}`)
+                                    .set('x-access-token', access_token)
+                                    .expect(404)
+                                    .expect((res4) => {
+                                        assert.equal(res4.body.msg, "Items not found with related tag.");
+                                    })
+                                    .end((err5, res5) => {
+                                        if(err5) throw err5;
+
+                                        return done();
+                                    });
+                            });
+                    });
+            });
+    });
+
     it('Test POST /tools WITHOUT token- Should return http status 401 unauthorized', (done) => {
         request(app)
             .post('/tools')
@@ -175,6 +253,9 @@ describe('Testing /tools URL', () => {
             })
             .set('Content-Type', 'application/json')
             .expect(401)
+            .expect((res) => {
+                assert.equal(res.body.msg, "No token provided.");
+            })
             .end((err, res) => {
                 if(err) throw err;
 
@@ -225,6 +306,9 @@ describe('Testing /tools URL', () => {
                             .set('x-access-token', access_token)
                             .set('Content-Type', 'application/json')
                             .expect(201)
+                            .expect((res) => {
+                                // assert.equal(res.body., "User not found!");
+                            })
                             .end((err, res) => {
                                 if(err) throw err;
 

@@ -40,10 +40,22 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "User created!"
+                        "description": "User created!",
+                        "schema": {
+                            "$ref": "#/components/schemas/UserLogged"
+                        }
                     },
                     "200": {
-                        "description": "User already exist!"
+                        "description": "User already exist!",
+                        "schema": {
+                            "$ref": "#/components/schemas/GenericMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error.",
+                        "schema": {
+                            "$ref": "#/components/schemas/GenericMessage"
+                        }
                     }
                 }
             }
@@ -79,13 +91,25 @@
                         }
                     },
                     "401": {
-                        "description": "User login with wrong email and password. (Unauthorized)"
+                        "description": "User login with wrong email and password. (Unauthorized)",
+                        "schema": {
+                            "$ref": "#/components/schemas/GenericMessage"
+                        }
                     },
                     "403": {
                         "description": "User login with wrong email and password. Maybe token is no longer valid."
                     },
                     "404": {
-                        "description": "User not found."
+                        "description": "User not found.",
+                        "schema": {
+                            "$ref": "#/components/schemas/GenericMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error.",
+                        "schema": {
+                            "$ref": "#/components/schemas/GenericMessage"
+                        }
                     }
                 }
             }
@@ -111,7 +135,22 @@
                         }
                     },
                     "401": {
-                        "description": "User Unauthorized. Maybe email or password is wrong."
+                        "description": "User Unauthorized. Maybe email or password is wrong.",
+                        "schema": {
+                            "$ref": "#/components/schemas/GenericMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Items not found with related tag.",
+                        "schema": {
+                            "$ref": "#/components/schemas/GenericMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error.",
+                        "schema": {
+                            "$ref": "#/components/schemas/GenericMessage"
+                        }
                     }
                 }
             },
@@ -135,8 +174,24 @@
                             "$ref": "#/components/schemas/Tool"
                         }
                     },
+                    "401": {
+                        "description": "User Unauthorized. Maybe email or password is wrong.",
+                        "schema": {
+                            "$ref": "#/components/schemas/GenericMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden.",
+                        "schema": {
+                            "$ref": "#/components/schemas/JWTValidateMessage"
+                        }
+                    },
                     "500": {
-                        "description": "Server error while trying save data."
+                        "description": "Server error or Failed to authenticate token.",
+                        "schema": [
+                            {"$ref": "#/components/schemas/GenericMessage" },
+                            {"$ref": "#/components/schemas/JWTValidateMessage"}
+                        ]
                     }
                 }
             }
@@ -162,11 +217,27 @@
                     }
                 ],
                 "responses": {
+                    "401": {
+                        "description": "User Unauthorized. Maybe email or password is wrong.",
+                        "schema": {
+                            "$ref": "#/components/schemas/GenericMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden.",
+                        "schema": {
+                            "$ref": "#/components/schemas/JWTValidateMessage"
+                        }
+                    },
                     "404": {
-                        "description": "Parameter not found OR Item not found in database."
+                        "description": "Item not found in database."
                     },
                     "500": {
-                        "description": "Server error while trying delete data."
+                        "description": "Server error while trying delete data.",
+                        "schema": [
+                            {"$ref": "#/components/schemas/GenericMessage" },
+                            {"$ref": "#/components/schemas/JWTValidateMessage"}
+                        ]
                     }
                 }
             }
@@ -198,6 +269,18 @@
                             "$ref": "#/components/schemas/Tool"
                         }
                     },
+                    "401": {
+                        "description": "User Unauthorized. Maybe email or password is wrong.",
+                        "schema": {
+                            "$ref": "#/components/schemas/GenericMessage"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden.",
+                        "schema": {
+                            "$ref": "#/components/schemas/JWTValidateMessage"
+                        }
+                    },
                     "404": {
                         "description": "Item not found in database."
                     },
@@ -211,6 +294,23 @@
 
     "components": {
         "schemas" : {
+            "GenericMessage": {
+                "properties": {
+                    "msg": {
+                        "type": "string"
+                    }
+                }
+            },
+            "JWTValidateMessage": {
+                "properties": {
+                    "msg": {
+                        "type": "string"
+                    },
+                    "auth": {
+                        "type": "boolean"
+                    }
+                }
+            },
             "UserRegister": {
                 "properties": {
                     "name": {

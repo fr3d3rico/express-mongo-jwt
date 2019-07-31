@@ -8,6 +8,8 @@ const { SECRET_KEY, LIFE_TIME_TOKEN } = require('../config/config');
 
 router.post('/register', (req, res) => {
 
+    //validate
+
     const name = req.body.name;
     const email = req.body.email;
     const password = bcrypt.hashSync(req.body.password);
@@ -15,12 +17,12 @@ router.post('/register', (req, res) => {
     var newUser = new UserSchema({name: name, email: email, password: password});
 
     UserSchema.find({email: email}, null, { skip: 0 }, (err, docs) => {
-        if(err) return res.status(500).send('Server error!(find): ' + err);
+        if(err) return res.status(500).send({'msg':'Server error!(find): ' + err});
 
-        if(docs.length > 0) return res.status(200).send('User already exist!');
+        if(docs.length > 0) return res.status(200).send({'msg':'User already exist!'});
         
         newUser.save((err, user) => {
-            if(err) return res.status(500).send('Server error!(save): ' + err);
+            if(err) return res.status(500).send({'msg':'Server error!(save): ' + err});
 
             const expiresIn = LIFE_TIME_TOKEN;
             const accessToken = jwt.sign({id: user._id}, SECRET_KEY, {
@@ -44,12 +46,12 @@ router.post('/login', (req, res) => {
     const password = req.body.password;
 
     UserSchema.findOne({email: email}, (err, doc) => {
-        if(err) return res.status(500).send('Server error!(find): ' + err);
-        if(!doc) return res.status(404).send('User not found!');
+        if(err) return res.status(500).send({'msg':'Server error!(find): ' + err});
+        if(!doc) return res.status(404).send({'msg':'User not found!'});
         
         const result = bcrypt.compareSync(password, doc.password);
 
-        if(!result) return res.status(401).send('Password not valid!');
+        if(!result) return res.status(401).send({'msg':'Password not valid!'});
 
         const expiresIn = LIFE_TIME_TOKEN;
         const accessToken = jwt.sign({id: doc._id}, SECRET_KEY, {
