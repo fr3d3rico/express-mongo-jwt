@@ -4,7 +4,7 @@ const UserSchema = require('../model/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const { SECRET_KEY, LIFE_TIME_TOKEN } = require('../config/config');
+const { SECRET_KEY, LIFE_TIME_TOKEN, cryptor } = require('../config/config');
 
 router.post('/register', (req, res) => {
 
@@ -34,7 +34,11 @@ router.post('/register', (req, res) => {
                 email: user.email
             }
 
-            res.status(201).send({'user': userData, 'access_token': accessToken, 'expires_in': expiresIn});
+            // console.log('accessToken= ' + accessToken);
+            // console.log('cryptor.encode(accessToken)= ' + cryptor.encode(accessToken));
+
+
+            res.status(201).send({'user': userData, 'access_token': cryptor.encode(accessToken), 'expires_in': expiresIn});
         });
     });
 
@@ -63,7 +67,7 @@ router.post('/login', (req, res) => {
             email: doc.email
         }
 
-        res.status(200).cookie('access_token', accessToken).send({'user': userData, 'access_token': accessToken, 'expires_in': expiresIn});
+        res.status(200).cookie('access_token', accessToken).send({'user': userData, 'access_token': cryptor.encode(accessToken), 'expires_in': expiresIn});
     });
 });
 

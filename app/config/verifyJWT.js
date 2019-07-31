@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { cryptor } = require('../config/config');
 
 module.exports = (req, res, next) => {
 
@@ -6,7 +7,7 @@ module.exports = (req, res, next) => {
 
     if(!token) return res.status(401).send({auth: false, msg: 'No token provided.'});
 
-    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    jwt.verify(cryptor.decode(token), process.env.SECRET_KEY, (err, decoded) => {
         if(token && err) return res.status(403).send({auth: false, msg: 'Forbidden.'});
         if(err) return res.status(500).send({auth: false, msg: 'Failed to authenticate token.'});
 
