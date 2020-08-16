@@ -35,7 +35,7 @@ Here you can access issues (https://github.com/fr3d3rico/express-mongo-jwt/issue
 
 ## Which IDE do you recommend?
 
-I prefer use VS Code.
+I prefer to use the VS Code IDE.
 How to configure debug mode? When you hit "f5", vscode will automatically start the server. You should set initial file in launch.js config. Please check link: https://github.com/Microsoft/nodejstools/wiki/Debugging
 
 ## To test Docker, follow steps:
