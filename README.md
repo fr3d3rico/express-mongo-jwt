@@ -36,7 +36,7 @@ Here you can access issues (https://github.com/fr3d3rico/express-mongo-jwt/issue
 ## Which IDE do you recommend?
 
 I prefer use VS Code.
-How configure debug mode? When you hit "f5", vscode will automatically start server. You should set initial file in launch.js config. Please check link: https://github.com/Microsoft/nodejstools/wiki/Debugging
+How to configure debug mode? When you hit "f5", vscode will automatically start the server. You should set initial file in launch.js config. Please check link: https://github.com/Microsoft/nodejstools/wiki/Debugging
 
 ## To test Docker, follow steps:
 
@@ -49,7 +49,7 @@ Execute command "docker build -t <your username>/node-app ."
 
 This command will perform docker tasks to create mongo and node images.
 
-3 - Execute "docker images" to see the images.
+3 - Execute "docker images" to see all the images.
 
 4 - Run mongo container: "docker run -p 27017:27017 -d mongo"
 
